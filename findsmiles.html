@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Name to SMILES Converter</title>
+</head>
+<body>
+    <h1>Chemical Name to SMILES Converter</h1>
+    <p>Enter chemical names separated by commas:</p>
+    <textarea id="input" rows="4" cols="50"></textarea>
+    <button onclick="convertToSmiles()">Convert</button>
+    <div id="output"></div>
+
+    <script>
+function convertToSmiles() {
+    var input = document.getElementById("input").value;
+    var names = input.split(",").map(function(name) {
+        return name.trim();
+    });
+    var output = document.getElementById("output");
+    output.innerHTML = ""; // Clear previous output
+    
+    var promises = names.map(function(name) {
+        return fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${name}/property/CanonicalSMILES/JSON`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.PropertyTable && data.PropertyTable.Properties && data.PropertyTable.Properties.length > 0) {
+                    return data.PropertyTable.Properties[0].CanonicalSMILES;
+                } else {
+                    return "N/A";
+                }
+            })
+            .catch(error => {
+                return `Error: ${error}`;
+            });
+    });
+
+    Promise.all(promises)
+        .then(smilesArray => {
+            output.innerHTML = `<p>${smilesArray.join(", ")}</p>`; // Set output with joined SMILES
+        });
+}
+
+        
+    </script>
+</body>
+</html>
