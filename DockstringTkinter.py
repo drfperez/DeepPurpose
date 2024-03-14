@@ -8,6 +8,9 @@ import rdkit.Chem as Chem
 subprocess.call(["pip", "install", "dockstring"])
 subprocess.call(["pip", "install", "gradio"])
 
+# Install necessary libraries
+subprocess.call(["conda", "install", "-c", "conda-forge", "openbabel"])
+
 # List of 58 protein targets
 protein_targets = [
     "IGF1R", "JAK2", "KIT", "LCK", "MAPK14", "MAPKAPK2", "MET", "PTK2", "PTPN1", "SRC",
