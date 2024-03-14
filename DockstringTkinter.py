@@ -4,10 +4,11 @@ from tkinter import ttk
 from dockstring import load_target
 import rdkit.Chem as Chem
 
-# Install necessary libraries
+# Install necessary libraries with specific versions
+subprocess.call(["conda", "install", "-c", "conda-forge", "openbabel"])
+subprocess.call(["pip", "install", "rdkit-pypi==2021.9.2"])
 subprocess.call(["pip", "install", "dockstring"])
 subprocess.call(["pip", "install", "gradio"])
-subprocess.call(["conda", "install", "-c", "conda-forge", "openbabel"])
 
 # List of 58 protein targets
 protein_targets = [
