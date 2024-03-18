@@ -1,14 +1,29 @@
-import subprocess
 import tkinter as tk
 from tkinter import ttk
 from dockstring import load_target
-import rdkit.Chem as Chem
+import sys
+import subprocess
+
+# Upgrade pip
+try:
+    subprocess.call([sys.executable, "-m", "pip", "install", "--upgrade", "pip"])
+except Exception as e:
+    print(f"Error upgrading pip: {e}")
 
 # Install necessary libraries with specific versions
-subprocess.call(["conda", "install", "-c", "conda-forge", "openbabel"])
-subprocess.call(["pip", "install", "rdkit-pypi==2021.9.2"])
-subprocess.call(["pip", "install", "dockstring"])
-subprocess.call(["pip", "install", "gradio"])
+libraries = [
+    ["openbabel"],
+    ["rdkit-pypi==2021.9.2"],
+    ["dockstring"]
+]
+
+for lib in libraries:
+    try:
+        subprocess.call([sys.executable, "-m", "pip", "install", *lib])
+    except Exception as e:
+        print(f"Error installing {lib}: {e}")
+
+import rdkit.Chem as Chem
 
 # List of 58 protein targets
 protein_targets = [
@@ -30,15 +45,18 @@ def perform_docking():
 
     docking_results = []
     for smiles in smiles_list:
-        # Convert SMILES string to RDKit molecule object
-        ligand = Chem.MolFromSmiles(smiles.strip())
+        try:
+            # Convert SMILES string to RDKit molecule object
+            ligand = Chem.MolFromSmiles(smiles.strip())
 
-        if ligand is None:
-            docking_results.append(f"Invalid SMILES string '{smiles.strip()}'. Please enter a valid SMILES.")
-        else:
-            # Perform docking
-            score, _ = target.dock(smiles.strip())
-            docking_results.append(f"Docking score for SMILES '{smiles.strip()}': {score:.3f}")
+            if ligand is None:
+                docking_results.append(f"Invalid SMILES string '{smiles.strip()}'. Please enter a valid SMILES.")
+            else:
+                # Perform docking
+                score, _ = target.dock(smiles.strip())
+                docking_results.append(f"Docking score for SMILES '{smiles.strip()}': {score:.3f}")
+        except Exception as e:
+            docking_results.append(f"Error processing SMILES '{smiles.strip()}': {str(e)}")
 
     # Display the docking scores
     result_text.config(state=tk.NORMAL)
