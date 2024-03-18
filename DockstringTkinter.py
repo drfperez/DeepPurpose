@@ -78,8 +78,9 @@ protein_target_combobox.grid(row=0, column=1, padx=10, pady=5)
 # SMILES entry
 smiles_label = ttk.Label(root, text="Enter SMILES separated by commas:")
 smiles_label.grid(row=1, column=0, padx=10, pady=5, sticky="w")
-smiles_entry = ttk.Entry(root)
+smiles_entry = ttk.Entry(root)  # Changed to Entry widget
 smiles_entry.grid(row=1, column=1, padx=10, pady=5)
+smiles_entry.focus_set()  # Set focus to SMILES entry
 
 # Docking button
 dock_button = ttk.Button(root, text="Perform Docking", command=perform_docking)
